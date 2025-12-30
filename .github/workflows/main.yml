@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
+    - name: Run Tests
+      # Assuming we want to run the test scripts. Ideally, these would be proper pytest tests.
+      # For now, we'll just check if the model script executes without error (it has a try/except block).
+      run: |
+        python test_model.py
+        
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Render
+      env:
+        deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      run: |
+        if [ -n "$deploy_url" ]; then
+          curl "$deploy_url"
+        else
+          echo "RENDER_DEPLOY_HOOK_URL is not set. Skipping deployment."
+          exit 0 
+        fi
