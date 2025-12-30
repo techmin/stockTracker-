@@ -27,6 +27,7 @@ jobs:
       # For now, we'll just check if the model script executes without error (it has a try/except block).
       run: |
         python test_model.py
+        python test_serving.py
         
   deploy:
     needs: test
