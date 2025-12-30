@@ -1,0 +1,10 @@
+mcp
+yfinance
+pandas
+numpy
+scikit-learn
+notebook
+matplotlib
+seaborn
+flask
+flask-cors
