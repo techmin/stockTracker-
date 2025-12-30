@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction AI - ML-Powered Trading Insights</title>
+    <meta name="description"
+        content="Advanced machine learning stock prediction platform using Random Forest algorithms to predict market trends">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-gradient"></div>
+    <div class="grid-overlay"></div>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 28L16 4L28 28H4Z" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M10 20L16 10L22 20" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <defs>
+                        <linearGradient id="gradient" x1="4" y1="4" x2="28" y2="28">
+                            <stop offset="0%" stop-color="#6366f1" />
+                            <stop offset="100%" stop-color="#8b5cf6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>Stock Prediction AI</h1>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link active">Predict</a>
+                <a href="#" class="nav-link">About</a>
+                <a href="https://github.com" target="_blank" class="nav-link">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <div class="hero-content">
+                    <span class="badge">
+                        <span class="badge-dot"></span>
+                        Powered by Machine Learning
+                    </span>
+                    <h2 class="hero-title">Predict Stock Trends with AI</h2>
+                    <p class="hero-description">
+                        Advanced Random Forest algorithm analyzes technical indicators to predict market movements with
+                        precision
+                    </p>
+                </div>
+            </section>
+
+            <section class="prediction-section">
+                <div class="search-card">
+                    <div class="search-header">
+                        <h3>Enter Stock Symbol</h3>
+                        <p>Get AI-powered predictions for any stock</p>
+                    </div>
+                    <form id="predictionForm" class="search-form">
+                        <div class="input-group">
+                            <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <input type="text" id="tickerInput" placeholder="e.g., AAPL, NVDA, TSLA" required
+                                autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn-primary" id="predictBtn">
+                            <span class="btn-text">Analyze Stock</span>
+                            <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M5 10h10M10 5l5 5-5 5" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </form>
+                    <div class="popular-stocks">
+                        <span class="popular-label">Popular:</span>
+                        <button class="stock-chip" data-ticker="AAPL">AAPL</button>
+                        <button class="stock-chip" data-ticker="NVDA">NVDA</button>
+                        <button class="stock-chip" data-ticker="TSLA">TSLA</button>
+                        <button class="stock-chip" data-ticker="MSFT">MSFT</button>
+                        <button class="stock-chip" data-ticker="GOOGL">GOOGL</button>
+                    </div>
+                </div>
+
+                <div id="loadingState" class="loading-state" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing market data...</p>
+                </div>
+
+                <div id="errorState" class="error-state" style="display: none;">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="20" stroke="#ef4444" stroke-width="2" />
+                        <path d="M24 14v12M24 30v2" stroke="#ef4444" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <h3>Something went wrong</h3>
+                    <p id="errorMessage"></p>
+                </div>
+
+                <div id="resultsContainer" class="results-container" style="display: none;">
+                    <div class="result-header">
+                        <div class="ticker-info">
+                            <h2 id="resultTicker" class="result-ticker"></h2>
+                            <div id="priceInfo" class="price-info"></div>
+                        </div>
+                        <div id="predictionBadge" class="prediction-badge"></div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon buy">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 5v14M5 12l7-7 7 7" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Prediction</span>
+                                <span id="predictionValue" class="stat-value"></span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon confidence">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path
+                                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Confidence</span>
+                                <span id="confidenceValue" class="stat-value"></span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon precision">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Model Precision</span>
+                                <span id="precisionValue" class="stat-value"></span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon change">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Price Change</span>
+                                <span id="changeValue" class="stat-value"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="indicators-section">
+                        <h3 class="section-title">Technical Indicators</h3>
+                        <div class="indicators-grid">
+                            <div class="indicator-card">
+                                <div class="indicator-header">
+                                    <span class="indicator-name">SMA 10</span>
+                                    <span id="sma10Value" class="indicator-value"></span>
+                                </div>
+                                <div class="indicator-bar">
+                                    <div id="sma10Bar" class="indicator-fill"></div>
+                                </div>
+                            </div>
+
+                            <div class="indicator-card">
+                                <div class="indicator-header">
+                                    <span class="indicator-name">SMA 50</span>
+                                    <span id="sma50Value" class="indicator-value"></span>
+                                </div>
+                                <div class="indicator-bar">
+                                    <div id="sma50Bar" class="indicator-fill"></div>
+                                </div>
+                            </div>
+
+                            <div class="indicator-card">
+                                <div class="indicator-header">
+                                    <span class="indicator-name">RSI</span>
+                                    <span id="rsiValue" class="indicator-value"></span>
+                                </div>
+                                <div class="indicator-bar">
+                                    <div id="rsiBar" class="indicator-fill"></div>
+                                </div>
+                                <div class="rsi-zones">
+                                    <span class="rsi-zone oversold">Oversold</span>
+                                    <span class="rsi-zone neutral">Neutral</span>
+                                    <span class="rsi-zone overbought">Overbought</span>
+                                </div>
+                            </div>
+
+                            <div class="indicator-card">
+                                <div class="indicator-header">
+                                    <span class="indicator-name">Volume</span>
+                                    <span id="volumeValue" class="indicator-value"></span>
+                                </div>
+                                <div class="volume-bar-container">
+                                    <div id="volumeBar" class="volume-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Built with Random Forest ML • Not financial advice • For educational purposes only</p>
+        </div>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
